@@ -14,7 +14,6 @@ import numpy as np
 import pandas as pd
 
 import random
-from deap import base, creator, tools, algorithms
 from copy import deepcopy
 
 import streamlit as st
