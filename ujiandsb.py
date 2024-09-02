@@ -13,10 +13,14 @@ import io
 import warnings
 warnings.filterwarnings("ignore")
 
+import requests
 
-# In[3]:
-
-
+def download_template(url):
+    # Mengambil file dari URL di GitHub
+    response = requests.get(url)
+    response.raise_for_status()  # Pastikan permintaan berhasil
+    return response.content
+    
 # Data input
 def read_input(file):
     # Membaca berbagai sheet dari file Excel
@@ -33,7 +37,22 @@ def main():
     st.title("Departemen Statistika Bisnis ITS")
 
     # Mengunggah file Excel
-    uploaded_file = st.file_uploader("Unggah file Excel", type=["xlsx"])
+    uploaded_file = st.file_uploader("Silahkan Unggah File Excel", type=["xlsx"])
+
+    template_url = "https://github.com/manafis99/RAI/raw/main/Template%20Plot%20Ujian%20DSB.xlsx"
+    
+    # Tombol untuk mengunduh template
+    if st.button("Unduh Template Excel"):
+        try:
+            template_file = download_template(template_url)
+            st.download_button(
+                label="Klik di sini untuk mengunduh template",
+                data=template_file,
+                file_name="Template Plot Ujian DSB.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+        except Exception as e:
+            st.error(f"Gagal mengunduh template: {e}")
     
     if uploaded_file is not None:
         # Baca file Excel yang diunggah
@@ -591,7 +610,7 @@ def main():
             supervision_counts.to_excel(writer, sheet_name='Rekap Jaga')
         
         # Buat tombol untuk mengunduh file Excel hasilnya
-        st.write("Silahkan Unduh Excel Berikut:")
+        st.write("Silahkan Unduh Jadwal Ujian Berikut:")
         st.download_button(
             label="Unduh Jadwal Terupdate",
             data=output.getvalue(),
