@@ -36,12 +36,46 @@ def read_input(file):
     df_butuh_lab = pd.read_excel(file, sheet_name='Butuh Lab')
     return df_sesi, df_ruang, df_makul, df_tidak_ujian, df_butuh_lab
 
-loc_input = loc + "/" + nama_file_input + ".xlsx"
-df_sesi = pd.read_excel(loc_input, sheet_name='Sesi')
-df_ruang = pd.read_excel(loc_input, sheet_name='Ruangan')
-df_makul = pd.read_excel(loc_input, sheet_name='Makul')
-df_tidak_ujian = pd.read_excel(loc_input, sheet_name='Tidak Ujian')
-df_butuh_lab = pd.read_excel(loc_input, sheet_name='Butuh Lab')
+# Fungsi utama Streamlit
+def main():
+    st.title("Aplikasi Penjadwalan Ujian")
+
+    # Mengunggah file Excel
+    uploaded_file = st.file_uploader("Unggah file Excel", type=["xlsx"])
+    
+    if uploaded_file is not None:
+        # Baca file Excel yang diunggah
+        df_sesi, df_ruang, df_makul, df_tidak_ujian, df_butuh_lab = read_input(uploaded_file)
+
+        # Proses data dan tampilkan hasil
+        st.write("Data Sesi:", df_sesi)
+        st.write("Data Ruangan:", df_ruang)
+        st.write("Data Mata Kuliah:", df_makul)
+        st.write("Data Tidak Ujian:", df_tidak_ujian)
+        st.write("Data Butuh Lab:", df_butuh_lab)
+
+        # Tampilkan hasil
+        st.write("Jadwal Terupdate dengan Alokasi Mahasiswa:")
+        st.dataframe(a)
+        st.write("Rekap Jaga:")
+        st.dataframe(supervision_counts)
+
+        # Menyimpan output ke dalam Excel dan memungkinkan pengunduhan
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            b.to_excel(writer, sheet_name='Jadwal', index=False)
+            supervision_counts.to_excel(writer, sheet_name='Rekap Jaga')
+        
+        # Buat tombol untuk mengunduh file Excel hasilnya
+        st.download_button(
+            label="Unduh Jadwal Terupdate",
+            data=output.getvalue(),
+            file_name="jadwal_ujian.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+
+if __name__ == "__main__":
+    main()
 
 df_makul.fillna(method='ffill', inplace = True)
 df_sesi.fillna(method='ffill', inplace = True)
@@ -683,45 +717,4 @@ b = b[[
 
 # In[ ]:
 
-
-# Fungsi utama Streamlit
-def main():
-    st.title("Aplikasi Penjadwalan Ujian")
-
-    # Mengunggah file Excel
-    uploaded_file = st.file_uploader("Unggah file Excel", type=["xlsx"])
-    
-    if uploaded_file is not None:
-        # Baca file Excel yang diunggah
-        df_sesi, df_ruang, df_makul, df_tidak_ujian, df_butuh_lab = read_input(uploaded_file)
-
-        # Proses data dan tampilkan hasil
-        st.write("Data Sesi:", df_sesi)
-        st.write("Data Ruangan:", df_ruang)
-        st.write("Data Mata Kuliah:", df_makul)
-        st.write("Data Tidak Ujian:", df_tidak_ujian)
-        st.write("Data Butuh Lab:", df_butuh_lab)
-
-        # Tampilkan hasil
-        st.write("Jadwal Terupdate dengan Alokasi Mahasiswa:")
-        st.dataframe(a)
-        st.write("Rekap Jaga:")
-        st.dataframe(supervision_counts)
-
-        # Menyimpan output ke dalam Excel dan memungkinkan pengunduhan
-        output = io.BytesIO()
-        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-            b.to_excel(writer, sheet_name='Jadwal', index=False)
-            supervision_counts.to_excel(writer, sheet_name='Rekap Jaga')
-        
-        # Buat tombol untuk mengunduh file Excel hasilnya
-        st.download_button(
-            label="Unduh Jadwal Terupdate",
-            data=output.getvalue(),
-            file_name="jadwal_ujian.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-
-if __name__ == "__main__":
-    main()
 
