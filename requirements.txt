@@ -1,6 +1,1 @@
 numpy
-pandas
-copy
-streamlit
-io
-warnings
