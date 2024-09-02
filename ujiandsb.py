@@ -592,6 +592,14 @@ def main():
                         'Kapasitas',
                         ]]
         
+        # Buat tombol untuk mengunduh file Excel hasilnya
+        st.download_button(
+            label="Unduh Jadwal Terupdate",
+            data=output.getvalue(),
+            file_name="jadwal_ujian.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        
         # Proses data dan tampilkan hasil
         st.write("Data Sesi:", df_sesi)
         st.write("Data Ruangan:", df_ruang)
@@ -610,14 +618,6 @@ def main():
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
             b.to_excel(writer, sheet_name='Jadwal', index=False)
             supervision_counts.to_excel(writer, sheet_name='Rekap Jaga')
-        
-        # Buat tombol untuk mengunduh file Excel hasilnya
-        st.download_button(
-            label="Unduh Jadwal Terupdate",
-            data=output.getvalue(),
-            file_name="jadwal_ujian.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
 
 if __name__ == "__main__":
     main()
