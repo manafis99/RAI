@@ -1,15 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
-nama_file_output = 'jadwal_ujian'
-
-
-# In[24]:
-
-
 import numpy as np
 import pandas as pd
 
@@ -39,6 +30,7 @@ def read_input(file):
 # Fungsi utama Streamlit
 def main():
     st.title("Aplikasi Penjadwalan Ujian")
+    st.title("Departemen Statistika Bisnis ITS")
 
     # Mengunggah file Excel
     uploaded_file = st.file_uploader("Unggah file Excel", type=["xlsx"])
@@ -591,8 +583,15 @@ def main():
                         'Jumlah Mahasiswa',
                         'Kapasitas',
                         ]]
+
+        # Menyimpan output ke dalam Excel dan memungkinkan pengunduhan
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            b.to_excel(writer, sheet_name='Jadwal', index=False)
+            supervision_counts.to_excel(writer, sheet_name='Rekap Jaga')
         
         # Buat tombol untuk mengunduh file Excel hasilnya
+        st.write("Silahkan Unduh Excel Berikut:")
         st.download_button(
             label="Unduh Jadwal Terupdate",
             data=output.getvalue(),
@@ -612,12 +611,6 @@ def main():
         st.dataframe(a)
         st.write("Rekap Jaga:")
         st.dataframe(supervision_counts)
-
-        # Menyimpan output ke dalam Excel dan memungkinkan pengunduhan
-        output = io.BytesIO()
-        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-            b.to_excel(writer, sheet_name='Jadwal', index=False)
-            supervision_counts.to_excel(writer, sheet_name='Rekap Jaga')
 
 if __name__ == "__main__":
     main()
