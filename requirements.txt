@@ -1,6 +1,5 @@
 numpy
 pandas
-deap
 copy
 streamlit
 io
